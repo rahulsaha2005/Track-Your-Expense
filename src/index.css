@@ -1,0 +1,92 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+h1 {
+  text-align: left;
+  margin-left: 50px;
+}
+
+.Expenese {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 35%;
+  padding: 0px 50px;
+}
+.Expenese div {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-body {
+  display: flex;
+}
+
+.table-wrapper {
+  align-self: flex-start;
+  flex-shrink: 0;
+  overflow-x: auto;
+  width: 40%;
+  padding: 0px 50px;
+  margin-top: 10px;
+}
+
+table {
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px 12px;
+  border: 1px solid #000;
+  text-align: left;
+}
+
+@media screen and (max-width: 768px) {
+  h1 {
+    text-align: center;
+  }
+  .main-body {
+    flex-direction: column;
+  }
+  .Expenese {
+    width: 100%;
+    font-size: 30px;
+    padding: 20px;
+  }
+  input {
+    height: 20px;
+    font-size: 30px;
+    border: 2px solid black;
+    border-radius: 5px;
+  }
+  .Expenese select {
+    height: 30px;
+    font-size: 30px;
+    border: 2px solid black;
+    border-radius: 5px;
+  }
+  input:hover {
+    height: 40px;
+  }
+  .Expenese select:hover
+  {
+height: 40px;
+  }
+  .table-wrapper {
+    width: 100%;
+    margin-left: -30px;
+  }
+  th,
+  td {
+    font-size: 25px;
+  }
+  button {
+    height: 40px;
+  }
+ 
+}
