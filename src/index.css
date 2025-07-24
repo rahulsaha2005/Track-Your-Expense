@@ -18,6 +18,7 @@ h1 {
 .Expenese div {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .main-body {
@@ -44,6 +45,16 @@ td {
   padding: 8px 12px;
   border: 1px solid #000;
   text-align: left;
+}
+
+.error
+{
+  position: absolute;
+  margin: 0px;
+  padding: 0px;
+  top: 100%;
+  color: red;
+  font-size: 10px;
 }
 
 @media screen and (max-width: 768px) {

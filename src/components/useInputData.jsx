@@ -16,19 +16,17 @@ export default function Display() {
   const applySortAndFilter = (category, order) => {
     let newData = [...History];
 
-    // Step 1: Sort by amount
     if (order === 1) {
-      newData.sort((a, b) => a[2] - b[2]); // ascending
+      newData.sort((a, b) => a[2] - b[2]);
     } else if (order === -1) {
-      newData.sort((a, b) => b[2] - a[2]); // descending
+      newData.sort((a, b) => b[2] - a[2]);
     }
 
-    // Step 2: Category sorting - move matching category rows to top
     if (category !== "ALL") {
       newData = newData.sort((a, b) => {
         if (a[1] === category && b[1] !== category) return -1;
         if (a[1] !== category && b[1] === category) return 1;
-        return 0; // keep order if same
+        return 0;
       });
     }
 
@@ -53,26 +51,20 @@ export default function Display() {
                 id="sortingBycategory"
                 value={Category}
                 onChange={(e) => setCategory(e.target.value)}
-                style={{ width: "100%", height: "100%", border: "none",fontWeight:"bold",fontSize:"20px" }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  border: "none",
+                  fontWeight: "600",
+                  fontSize: "16px",
+                }}
               >
-                <option value="ALL">
-                  ALL
-                </option>
-                <option value="Grocery">
-                  Grocery
-                </option>
-                <option value="Clothes">
-                  Clothes
-                </option>
-                <option value="Bills">
-                  Bills
-                </option>
-                <option value="Education">
-                  Education
-                </option>
-                <option value="Medicine">
-                  Medicine
-                </option>
+                <option value="ALL">ALL</option>
+                <option value="Grocery">Grocery</option>
+                <option value="Clothes">Clothes</option>
+                <option value="Bills">Bills</option>
+                <option value="Education">Education</option>
+                <option value="Medicine">Medicine</option>
               </select>
             </th>
             <th>
@@ -100,7 +92,7 @@ export default function Display() {
         </thead>
         <tbody>
           {sortedData.map((data, index) => (
-            <tr key={index}>
+            <tr key={crypto.randomUUID()}>
               <td>{data[0]}</td>
               <td>{data[1]}</td>
               <td>{"₹" + data[2]}</td>
@@ -111,7 +103,7 @@ export default function Display() {
               <strong>Total</strong>
             </td>
             <td>
-             <strong> {"₹" + totalAmount}</strong>
+              <strong> {"₹" + totalAmount}</strong>
             </td>
           </tr>
         </tbody>
