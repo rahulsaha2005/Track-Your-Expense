@@ -1,5 +1,7 @@
 import React, { useState, useContext } from "react";
 import { HistoryContext } from "./readInputData";
+import Input from "./Input.jsx";
+import Select from "./Select.jsx";
 
 export default function Expense() {
   const [expense, setExpense] = useState({
@@ -8,23 +10,37 @@ export default function Expense() {
     Amount: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({
+    title: "",
+    category: "",
+    amount: "",
+  });
   const { addtoHistory } = useContext(HistoryContext);
+
+  const validateConfig = {
+    Title: [
+      { required: true, message: "Title is required" },
+      { minLength: 5, message: "lenght must be long atleast 5 character long" },
+    ],
+    Category: [{ required: true, message: "Category Selection is required" }],
+    Amount: [{ required: true, message: "Amount is required" }],
+  };
 
   const validate = (formData) => {
     const errorsData = {};
+    Object.entries(formData).forEach(([key, value]) => {
+      validateConfig[key].some((rule) => {
+        if (rule.required && !value) {
+          errorsData[key.toLowerCase()] = rule.message;
+          return true;
+        }
 
-    if (!formData.Title.trim()) {
-      errorsData.title = "Title is required";
-    }
-
-    if (!formData.Category.trim()) {
-      errorsData.category = "Please select a category";
-    }
-
-    if (!formData.Amount.trim()) {
-      errorsData.amount = "Amount is required";
-    }
+        if (rule.minLength && value.length < rule.minLength) {
+          errorsData[key.toLowerCase()] = rule.message;
+          return true;
+        }
+      });
+    });
 
     setErrors(errorsData);
     return errorsData;
@@ -62,48 +78,39 @@ export default function Expense() {
 
   return (
     <form className="Expenese" onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="Title">Title</label>
-        <input
-          type="text"
-          id="Title"
-          value={expense.Title}
-          onChange={handleChange}
-        />
-        <p className="error">{errors.title}</p>
-      </div>
+      <Input
+        htmlFor="Title"
+        label="Title"
+        type="text"
+        id="Title"
+        value={expense.Title}
+        onchange={handleChange}
+        className="error"
+        errors={errors.title}
+      />
 
-      <div>
-        <label htmlFor="Category">Category</label>
-        <select
-          id="Category"
-          value={expense.Category}
-          onChange={handleChange}
-        >
-          <option value="" disabled>
-            -- Select Category --
-          </option>
-          <option value="Grocery">Grocery</option>
-          <option value="Clothes">Clothes</option>
-          <option value="Bills">Bills</option>
-          <option value="Education">Education</option>
-          <option value="Medicine">Medicine</option>
-        </select>
-        <p className="error">{errors.category}</p>
-      </div>
-
-      <div>
-        <label htmlFor="Amount">Amount</label>
-        <input
-          type="number"
-          id="Amount"
-          min="0"
-          step="0.01"
-          value={expense.Amount}
-          onChange={handleChange}
-        />
-        <p className="error">{errors.amount}</p>
-      </div>
+      <Select
+        htmlFor="Category"
+        label="Category"
+        id="Category"
+        value={expense.Category}
+        onChange={handleChange}
+        className="error"
+        errors={errors.category}
+        defaultvalue="  -- Select Category --"
+        options={["Grocery", "Clothes", "Bills", "Education", "Medicine"]}
+        defaultValue={"---Select Category---"}
+      />
+      <Input
+        htmlFor="Amount"
+        label="Amount"
+        type="number"
+        id="Amount"
+        value={expense.Amount}
+        onchange={handleChange}
+        className="error"
+        errors={errors.amount}
+      />
 
       <button type="submit">Add</button>
     </form>
