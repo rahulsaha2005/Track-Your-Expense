@@ -1,26 +1,19 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { HistoryContext } from "./readInputData";
 import down from "../assets/down.png";
 import up from "../assets/up.png";
 import { useFilter } from "./filter";
 import ContextMenu from "./ContextMenu";
 
-export default function Display() {
-  // import our context menu data to server for using it
+export default function Display({ expense, setExpense }) {
   const { History } = useContext(HistoryContext);
-  // sorting the data
   const [sortOrder, setSortOrder] = useState(0);
-  // filter data by options
   const [filteredData, setQuery] = useFilter(History, (item) => item[1]);
-  //  table reperent by using value
   const [category, setCategory] = useState("ALL");
-  //  postion for edit and delete
   const [position, setPosition] = useState(null);
-
   const [id, setId] = useState("");
 
   let displayData = [...filteredData];
-
   if (sortOrder === 1) displayData.sort((a, b) => a[2] - b[2]);
   else if (sortOrder === -1) displayData.sort((a, b) => b[2] - a[2]);
 
@@ -32,12 +25,18 @@ export default function Display() {
     setQuery(value);
   };
 
-
   return (
     <>
-      {position && <ContextMenu postion={position} setPosition={setPosition} id={id} />}
+      {position && (
+        <ContextMenu
+          position={position}
+          setPosition={setPosition}
+          id={id}
+          setExpense={setExpense}
+        />
+      )}
 
-      <div className="table-wrapper" onClick={()=>setPosition(null)}>
+      <div className="table-wrapper" onClick={() => setPosition(null)}>
         <table border={1}>
           <thead>
             <tr>
@@ -92,7 +91,6 @@ export default function Display() {
                 onContextMenu={(e) => {
                   e.preventDefault();
                   setPosition({ left: e.clientX - 2, top: e.clientY - 1 });
-                  // console.log(data);
                   setId(data[3]);
                 }}
               >

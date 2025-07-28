@@ -1,35 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
 import { HistoryContext } from "./readInputData";
-import { useContext } from "react";
 
-export default function ContextMenu({ postion, setPosition, id }) {
-  if (!postion.left) return;
-  const { History } = useContext(HistoryContext);
+export default function ContextMenu({ position, setPosition, id, setExpense }) {
+  const { History, setHistory } = useContext(HistoryContext);
+
+  if (!position?.left) return null;
+
+  const handleEdit = () => {
+    const index = History.findIndex((data) => data[3] === id);
+    if (index !== -1) {
+      const [Title, Category, Amount, entryId] = History[index];
+      setExpense({ Title, Category, Amount, id: entryId });
+    }
+    setPosition(null);
+  };
+
+  const handleDelete = () => {
+    const updated = History.filter((item) => item[3] !== id);
+    setHistory(updated);
+    setPosition(null);
+  };
 
   return (
-    <div className="ContextMenu" style={postion}>
-      <div
-        onClick={() => {
-          console.log("Edit");
-          setPosition(null);
-        }}
-      >
-        Edit
-      </div>
-      <div
-         onClick={() => {
-          // console.log("delete");
-          setPosition(null);
-          const index = History.findIndex((data) => data[3] === id);
-          if (index !== -1) {
-            History.splice(index, 1);
-          }
-          // console.log("After delete:", History);
-        }}
-      >
-        Delete
-      </div>
+    <div className="ContextMenu" style={position}>
+      <div onClick={handleEdit}>Edit</div>
+      <div onClick={handleDelete}>Delete</div>
     </div>
   );
 }
-
