@@ -20,7 +20,7 @@ export default function Expense() {
   const validateConfig = {
     Title: [
       { required: true, message: "Title is required" },
-      { minLength: 5, message: "lenght must be long atleast 5 character long" },
+      { minLength: 1, message: "lenght must be long atleast 5 character long" },
     ],
     Category: [{ required: true, message: "Category Selection is required" }],
     Amount: [{ required: true, message: "Amount is required" }],
@@ -56,6 +56,7 @@ export default function Expense() {
       expense.Title.trim(),
       expense.Category.trim(),
       parseFloat(expense.Amount),
+      expense.id = crypto.randomUUID(),
     ];
 
     addtoHistory(arr);

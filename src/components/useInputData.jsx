@@ -3,106 +3,115 @@ import { HistoryContext } from "./readInputData";
 import down from "../assets/down.png";
 import up from "../assets/up.png";
 import { useFilter } from "./filter";
+import ContextMenu from "./ContextMenu";
 
 export default function Display() {
+  // import our context menu data to server for using it
   const { History } = useContext(HistoryContext);
-
-  const [sortOrder, setSortOrder] = useState(0); // 0=no sort, 1=asc, -1=desc
-  const [category, setCategory] = useState("ALL");
-
-  // Get filtered data based on category
+  // sorting the data
+  const [sortOrder, setSortOrder] = useState(0);
+  // filter data by options
   const [filteredData, setQuery] = useFilter(History, (item) => item[1]);
+  //  table reperent by using value
+  const [category, setCategory] = useState("ALL");
+  //  postion for edit and delete
+  const [position, setPosition] = useState(null);
 
-  const [displayData, setDisplayData] = useState([]);
+  const [id, setId] = useState("");
 
-  useEffect(() => {
-    let data = [...filteredData];
+  let displayData = [...filteredData];
 
-    // Sort after filtering
-    if (sortOrder === 1) {
-      data.sort((a, b) => a[2] - b[2]);
-    } else if (sortOrder === -1) {
-      data.sort((a, b) => b[2] - a[2]);
-    }
+  if (sortOrder === 1) displayData.sort((a, b) => a[2] - b[2]);
+  else if (sortOrder === -1) displayData.sort((a, b) => b[2] - a[2]);
 
-    setDisplayData(data);
-  }, [filteredData, sortOrder]);
+  const totalAmount = displayData.reduce((sum, d) => sum + d[2], 0);
 
   const handleCategoryChange = (e) => {
     const value = e.target.value;
     setCategory(value);
-    setQuery(value); // updates useFilter hook
+    setQuery(value);
   };
 
-  const totalAmount = displayData.reduce((sum, cur) => sum + cur[2], 0);
 
   return (
-    <div className="table-wrapper">
-      <table border={1}>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>
-              <select
-                value={category}
-                onChange={handleCategoryChange}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  border: "none",
-                  fontWeight: "600",
-                  fontSize: "16px",
+    <>
+      {position && <ContextMenu postion={position} setPosition={setPosition} id={id} />}
+
+      <div className="table-wrapper" onClick={()=>setPosition(null)}>
+        <table border={1}>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>
+                <select
+                  value={category}
+                  onChange={handleCategoryChange}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                    fontWeight: "600",
+                    fontSize: "16px",
+                  }}
+                >
+                  <option value="ALL">ALL</option>
+                  <option value="Grocery">Grocery</option>
+                  <option value="Clothes">Clothes</option>
+                  <option value="Bills">Bills</option>
+                  <option value="Education">Education</option>
+                  <option value="Medicine">Medicine</option>
+                </select>
+              </th>
+              <th>
+                Amount
+                <img
+                  src={down}
+                  alt="desc"
+                  width="10"
+                  height="10"
+                  title="descending"
+                  onClick={() => setSortOrder(-1)}
+                  style={{ cursor: "pointer", marginLeft: "5px" }}
+                />
+                <img
+                  src={up}
+                  alt="asc"
+                  width="10"
+                  height="10"
+                  title="ascending"
+                  onClick={() => setSortOrder(1)}
+                  style={{ cursor: "pointer", marginLeft: "5px" }}
+                />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {displayData.map((data, index) => (
+              <tr
+                key={index}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  setPosition({ left: e.clientX - 2, top: e.clientY - 1 });
+                  // console.log(data);
+                  setId(data[3]);
                 }}
               >
-                <option value="ALL">ALL</option>
-                <option value="Grocery">Grocery</option>
-                <option value="Clothes">Clothes</option>
-                <option value="Bills">Bills</option>
-                <option value="Education">Education</option>
-                <option value="Medicine">Medicine</option>
-              </select>
-            </th>
-            <th>
-              Amount
-              <img
-                src={down}
-                alt="desc"
-                width="10"
-                height="10"
-                title="descending"
-                onClick={() => setSortOrder(-1)}
-                style={{ cursor: "pointer", marginLeft: "5px" }}
-              />
-              <img
-                src={up}
-                alt="asc"
-                width="10"
-                height="10"
-                title="ascending"
-                onClick={() => setSortOrder(1)}
-                style={{ cursor: "pointer", marginLeft: "5px" }}
-              />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayData.map((data, index) => (
-            <tr key={index}>
-              <td>{data[0]}</td>
-              <td>{data[1]}</td>
-              <td>{"₹" + data[2]}</td>
+                <td>{data[0]}</td>
+                <td>{data[1]}</td>
+                <td>{"₹" + data[2]}</td>
+              </tr>
+            ))}
+            <tr>
+              <td colSpan={2}>
+                <strong>Total</strong>
+              </td>
+              <td>
+                <strong>₹{totalAmount}</strong>
+              </td>
             </tr>
-          ))}
-          <tr>
-            <td colSpan={2}>
-              <strong>Total</strong>
-            </td>
-            <td>
-              <strong>₹{totalAmount}</strong>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
