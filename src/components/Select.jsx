@@ -12,12 +12,13 @@ export default function Select({
   defaultValue,
 }) {
   return (
-    <div>
+    <div >
       <label htmlFor={htmlFor}>{label}</label>
       <select
         id={id}
         value={value}
         onChange={onChange}
+        style={{fontSize:"20px"}}
       >
         {defaultValue && (
           <option value="" disabled>
